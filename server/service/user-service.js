@@ -1,8 +1,8 @@
 import UserModel from '../models/user-model.js'
 import bcrypt from 'bcrypt'
-import tokenService from './token-service.js'
 import UserDto from '../dtos/user-dto.js'
 import ApiError from '../exceptions/api-error.js'
+import TokenService from './token-service.js'
 
 class UserService {
   static async registration(email, password, login) {
@@ -19,8 +19,8 @@ class UserService {
       login
     })
     const userDto = new UserDto(user)
-    const tokens = tokenService.generateTokens({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    const tokens = TokenService.generateTokens({ ...userDto })
+    await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {
       ...tokens,
@@ -38,20 +38,34 @@ class UserService {
       throw ApiError.BadRequest('Пароль неверный')
     }
     const userDto = new UserDto(user)
-    const tokens = tokenService.generateTokens({ ...userDto })
+    const tokens = TokenService.generateTokens({ ...userDto })
 
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
+    await TokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return { ...tokens, user: userDto }
   }
 
   static async logout(refreshToken) {
-    return await tokenService.removeToken(refreshToken)
+    return await TokenService.removeToken(refreshToken)
   }
+
   static async refresh(refreshToken) {
     if (!refreshToken) {
       throw ApiError.UnauthorizedError()
     }
+    const userData = TokenService.validateRefreshToken(refreshToken)
+    const tokenFromDB = await TokenService.findToken(refreshToken)
+    if (!userData || !tokenFromDB) {
+      throw ApiError.UnauthorizedError()
+    }
+
+    const user = await UserModel.findById(userData.id)
+    const userDto = new UserDto(user)
+    const tokens = TokenService.generateTokens({ ...userDto })
+
+    await TokenService.saveToken(userDto.id, tokens.refreshToken)
+
+    return { ...tokens, user: userDto }
   }
 }
 

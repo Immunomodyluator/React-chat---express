@@ -1,0 +1,7 @@
+.svgSendDiv {
+    justify-self: start;
+    margin-left: 8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,6 +1,5 @@
-import jwt from 'jsonwebtoken'
 import tokenModel from '../models/token-model.js'
-
+import jwt from 'jsonwebtoken'
 class TokenService {
   static generateTokens(payload) {
     const accessToken = jwt.sign(
@@ -22,6 +21,25 @@ class TokenService {
       refreshToken
     }
   }
+
+  static validateAccessToken(token) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET)
+      return userData
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  static validateRefreshToken(token) {
+    try {
+      const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET)
+      return userData
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   static async saveToken(userId, refreshToken) {
     const tokenData = await tokenModel.findOne({ user: userId })
     if (tokenData) {
@@ -33,6 +51,11 @@ class TokenService {
   }
   static async removeToken(refreshToken) {
     const tokenData = await tokenModel.deleteOne({ refreshToken })
+    return tokenData
+  }
+
+  static async findToken(refreshToken) {
+    const tokenData = await tokenModel.findOne({ refreshToken })
     return tokenData
   }
 }

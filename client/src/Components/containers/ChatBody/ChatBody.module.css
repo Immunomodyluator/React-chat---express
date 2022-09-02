@@ -1,0 +1,5 @@
+.chatBody {
+    height: 92%;
+    display: flex;
+    flex-direction: column;
+}

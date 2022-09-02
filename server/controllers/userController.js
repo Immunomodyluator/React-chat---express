@@ -1,4 +1,3 @@
-import User from '../models/user-model.js'
 import userService from '../service/user-service.js'
 import { validationResult } from 'express-validator'
 import ApiError from '../exceptions/api-error.js'
@@ -49,15 +48,16 @@ class userController {
 
   static async refresh(req, res, next) {
     try {
-      const refreshToken = req.cookies
+      const { refreshToken } = req.cookies
       const userData = await userService.refresh(refreshToken)
       res.cookie('refreshToken', userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         httpOnly: true
       })
       return res.json(userData)
-    } catch (error) {
-      console.log(error)
+    } catch (e) {
+      console.log(e)
+      next(e)
     }
   }
 }
