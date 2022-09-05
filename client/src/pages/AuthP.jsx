@@ -1,11 +1,25 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import LoginForm from '../Components/auth/LoginForm/LoginForm'
 import RegistrationForm from '../Components/auth/RegistrationForm/RegistrationForm'
 import { Context } from '../index'
+import { useNavigate } from 'react-router-dom'
 
 export function AuthP() {
   const [isRegister, setIsRegister] = useState(false)
   const { store } = useContext(Context)
+  let navigate = useNavigate()
+
+  useEffect(() => {
+    store
+      .checkAuth()
+      .then((suc) => {
+        navigate('/')
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }, [])
+
   let selectForm
   if (isRegister) {
     selectForm = <RegistrationForm />

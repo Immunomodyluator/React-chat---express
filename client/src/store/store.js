@@ -1,59 +1,83 @@
-import { makeAutoObservable } from 'mobx'
-import AuthService from '../services/AuthService'
-import axios from 'axios'
+import { makeAutoObservable } from 'mobx';
+import AuthService from '../services/AuthService';
+import axios from 'axios';
+import MessageService from '../services/MessageService';
 
 export default class Store {
-  user = {}
-  isAuth = false
+  user = {};
+  isAuth = false;
+  isConnectedSocket = '';
 
   constructor() {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
   }
 
   setAuth(bool) {
-    this.isAuth = bool
+    this.isAuth = bool;
   }
 
   setUser(user) {
-    this.user = user
+    this.user = user;
+  }
+
+  setConnectedSocket(isConnected) {
+    this.isConnectedSocket = isConnected;
   }
 
   async registration(email, password, login) {
     try {
-      const response = await AuthService.registration(email, password, login)
-      localStorage.setItem('token', response.data.accessToken)
-      this.setAuth(true)
-      this.setUser(response.data.user)
+      const response = await AuthService.registration(email, password, login);
+      localStorage.setItem('token', response.data.accessToken);
+      this.setAuth(true);
+      this.setUser(response.data.user);
     } catch (e) {
-      console.log(e.response?.data?.message)
+      console.log(e.response?.data?.message);
     }
   }
 
   async login(email, password) {
     try {
-      const response = await AuthService.login(email, password)
-      localStorage.setItem('token', response.data.accessToken)
-      this.setAuth(true)
-      this.setUser(response.data.user)
+      const response = await AuthService.login(email, password);
+      localStorage.setItem('token', response.data.accessToken);
+      this.setAuth(true);
+      this.setUser(response.data.user);
     } catch (e) {
-      console.log(e.response?.data?.message)
+      console.log(e.response?.data?.message);
     }
   }
 
   async logout() {
-    const response = await AuthService.logout()
-    localStorage.removeItem('token')
-    this.setAuth(false)
-    this.setUser({})
+    const response = await AuthService.logout();
+    localStorage.removeItem('token');
+    this.setAuth(false);
+    this.setUser({});
   }
 
   async checkAuth() {
     const response = await axios.get(
       `${process.env.REACT_APP_API_URL}/refresh`,
       { withCredentials: true }
-    )
-    localStorage.setItem('token', response.data.accessToken)
-    this.setAuth(true)
-    this.setUser(response.data.user)
+    );
+    localStorage.setItem('token', response.data.accessToken);
+    this.setAuth(true);
+    this.setUser(response.data.user);
+  }
+
+  async sendMessage(login, message) {
+    try {
+      const response = await MessageService.sendMessage(login, message);
+      return response;
+    } catch (e) {
+      console.log(e.response?.data?.message);
+    }
+  }
+
+  async getMessage() {
+    try {
+      const response = await MessageService.getMessage();
+      return response;
+    } catch (e) {
+      console.log(e.response?.data?.message);
+    }
   }
 }
