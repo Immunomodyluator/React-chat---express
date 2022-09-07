@@ -11,7 +11,7 @@ function getTime() {
 const MessageModel = new mongoose.Schema({
   login: { type: String, required: true },
   date: { type: String, default: getTime() },
-  message: { type: String, required: true }
+  message: { type: String }
 });
 
 export default mongoose.model('Message', MessageModel);

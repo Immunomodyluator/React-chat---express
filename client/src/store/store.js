@@ -63,18 +63,18 @@ export default class Store {
     this.setUser(response.data.user);
   }
 
-  async sendMessage(login, message) {
+  sendMessage(login, message) {
     try {
-      const response = await MessageService.sendMessage(login, message);
+      const response = MessageService.sendMessage(login, message);
       return response;
     } catch (e) {
       console.log(e.response?.data?.message);
     }
   }
 
-  async getMessage() {
+  getMessage() {
     try {
-      const response = await MessageService.getMessage();
+      const response = MessageService.getMessage();
       return response;
     } catch (e) {
       console.log(e.response?.data?.message);

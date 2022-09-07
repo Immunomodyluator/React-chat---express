@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
   console.log(`${socket.client.id} connected`);
 
   socket.on('addMessage', (msg) => {
-    io.emit('addMessage', `${msg}`);
+    io.emit('addMessage');
   });
 
   socket.on('disconnect', () => {

@@ -9,7 +9,6 @@ export default class messageService {
   }
 
   static async getMessage() {
-    const allMessage = await messageModel.find();
-    return allMessage;
+    return messageModel.find();
   }
 }

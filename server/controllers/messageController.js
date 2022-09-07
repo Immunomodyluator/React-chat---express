@@ -4,7 +4,6 @@ import MessageDto from '../dtos/message-dto.js';
 export default class messageController {
   static async saveMessage(req, res, next) {
     try {
-      console.log('1');
       const { login, message } = req.body;
       const newMessage = messageService.saveMessage(login, message);
       return res.send(newMessage);

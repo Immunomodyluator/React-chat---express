@@ -1,30 +1,30 @@
-import React, { useContext, useEffect, useState } from 'react'
-import LoginForm from '../Components/auth/LoginForm/LoginForm'
-import RegistrationForm from '../Components/auth/RegistrationForm/RegistrationForm'
-import { Context } from '../index'
-import { useNavigate } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react';
+import LoginForm from '../сomponents/auth/LoginForm/LoginForm';
+import RegistrationForm from '../сomponents/auth/RegistrationForm/RegistrationForm';
+import { Context } from '../index';
+import { useNavigate } from 'react-router-dom';
 
 export function AuthP() {
-  const [isRegister, setIsRegister] = useState(false)
-  const { store } = useContext(Context)
-  let navigate = useNavigate()
+  const [isRegister, setIsRegister] = useState(false);
+  const { store } = useContext(Context);
+  let navigate = useNavigate();
 
   useEffect(() => {
     store
       .checkAuth()
       .then((suc) => {
-        navigate('/')
+        navigate('/');
       })
       .catch((e) => {
-        console.log(e)
-      })
-  }, [])
+        console.log(e);
+      });
+  }, []);
 
-  let selectForm
+  let selectForm;
   if (isRegister) {
-    selectForm = <RegistrationForm />
+    selectForm = <RegistrationForm />;
   } else {
-    selectForm = <LoginForm />
+    selectForm = <LoginForm />;
   }
 
   return (
@@ -34,7 +34,7 @@ export function AuthP() {
       <button onClick={() => setIsRegister(false)}>Вход</button>
       {selectForm}
     </>
-  )
+  );
 }
 
-export default AuthP
+export default AuthP;
